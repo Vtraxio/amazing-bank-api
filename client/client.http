@@ -1,0 +1,27 @@
+### Test
+
+GET {{host}}/
+
+### Account details
+
+GET {{host}}/account/123456
+
+### Login
+
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "login": "nigga",
+  "password": "nice"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token)
+%}
+
+### Get own details
+
+GET {{host}}/account/details
+Content-Type: application/json
+Authorization: {{auth_token}}
