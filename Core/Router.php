@@ -3,6 +3,14 @@
 namespace Core;
 
 use Closure;
+use Core\Details\HttpContext;
+use Core\Details\HttpParams;
+use Core\Details\HttpRequest;
+use Exception;
+use LogicException;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionMethod;
 
 class Router {
     private array $routes = [];
@@ -13,6 +21,7 @@ class Router {
             'uri' => trim($uri, '/'),
             'executor' => $executor,
             'matchers' => [],
+            'middlewares' => [],
         ];
 
         return $this;
@@ -44,13 +53,20 @@ class Router {
         return $this;
     }
 
+    public function use($middleware): static {
+        $this->routes[array_key_last($this->routes)]['middlewares'][] = $middleware;
+
+        return $this;
+    }
+
     /**
-     * @throws HttpException
+     * @throws HttpException|ReflectionException
      */
     public function route($baseurl, $uri, $method): void {
         // User-wpisane przez użytkownika, gdy korzysta z api.
         // Registered-zdefiniowane przez dewelopera podczas tworzenia api.
 
+        // Usuń $baseurl z uri i upewnij się, że nie ma ukośników na końcach
         $uri = trim($uri, '/');
         $uri = substr($uri, strlen(trim($baseurl, '/')));
         $uri = trim($uri, '/');
@@ -99,18 +115,8 @@ class Router {
             }
 
             // Jeśli dojdziemy tu, to oznacza, że znaleźliśmy odpowiedni wpis.
+            $data = $this->handle_route($params, $registeredRoute);
 
-            // Odróżnianie funkcji anonimowej od kontrolera
-            $request = new Request($params);
-            $executor = $registeredRoute['executor'];
-            $data = null;
-            if ($executor instanceof Closure) {
-                $data = $executor($request);
-            } elseif (is_array($executor)) {
-                [$controller, $method] = $executor;
-                $class = App::container()->newClass($controller);
-                $data = $class->$method($request);
-            }
 
             header("Content-Type: application/json");
             if ($data)
@@ -121,5 +127,48 @@ class Router {
 
         // Nic nie zostało znalezione.
         throw new HttpException(HttpStatusCode::NOT_FOUND);
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    private function handle_route(array $routeParams, array $route): mixed {
+        $request = new HttpRequest($routeParams);
+        $params = new HttpParams($routeParams);
+        $context = new HttpContext($request, $params);
+
+        $executor = $route['executor'];
+        $function = ReflectorUtils::getReflectionFunction($executor);
+
+        $reflectionData = [$context, $request, $params];
+
+        $middlewareFunc = new MiddlewareFunc();
+        foreach ($route['middlewares'] as $middleware) {
+            $class = App::container()->newClass($middleware);
+            $class->handle($context, $middlewareFunc);
+        }
+        $reflectionData = array_merge($reflectionData, $middlewareFunc->available);
+
+        $funcParams = [];
+
+        foreach ($function->getParameters() as $parameter) {
+            $parameterType = $parameter->getType()->getName();
+            $funcParam = current(array_filter($reflectionData, function ($pm) use ($parameterType) {
+                return get_class($pm) == $parameterType;
+            }));
+            if (!$funcParam) {
+                throw new ReflectionException("Route '{$route['uri']}' attempted to get a value of type '{$parameterType}' however it is not available in the reflection pool, are the proper middleware included?");
+            }
+            $funcParams[] = $funcParam;
+        }
+
+        if ($function instanceof ReflectionFunction) {
+            return $function->invokeArgs($funcParams);
+        } elseif ($function instanceof ReflectionMethod) {
+            $class = App::container()->newClass($function->getDeclaringClass()->getName());
+            return $function->invokeArgs($class, $funcParams);
+        }
+        throw new LogicException("This code should never be reached.");
     }
 }

@@ -7,6 +7,7 @@ use ReflectionClass;
 
 class Container {
     private array $bindings = [];
+    private array $initialized = [];
 
     public function bind($key, $resolver): void {
         $this->bindings[$key] = $resolver;
