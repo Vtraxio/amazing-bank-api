@@ -22,6 +22,8 @@ $router = new Router();
 $config = require base_path('config.php');
 require base_path('routes.php');
 
+header("Content-type: application/json");
+
 try {
     $router->route($config['misc']['base_path'], strtok($_SERVER['REQUEST_URI'], '?'), $_SERVER['REQUEST_METHOD']);
 } catch (HttpException $exception) {

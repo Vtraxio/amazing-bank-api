@@ -21,6 +21,7 @@ class AuthMiddleware implements Middleware {
         $user = $this->db->query('SELECT * FROM "user" u WHERE u.id = ?;', [
             $userId
         ])->fetch();
+
         $userModel = new User($user['id'], $user['email']);
         $middlewareFunc->makeAvailable($userModel);
     }

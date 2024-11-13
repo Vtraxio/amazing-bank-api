@@ -19,7 +19,7 @@ class UserController {
         return Account::getAccount($params['id'], $this->db) ?? throw new HttpException();
     }
 
-    public function showMe(HttpRequest $request, User $user) {
+    public function showMe(User $user): Account {
         return $user->account();
     }
 }

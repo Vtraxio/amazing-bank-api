@@ -23,5 +23,15 @@ Content-Type: application/json
 ### Get own details
 
 GET {{host}}/account/details
+Authorization: {{auth_token}}
+
+### Transfer money
+
+POST {{host}}/transfer
 Content-Type: application/json
 Authorization: {{auth_token}}
+
+{
+  "target": 123,
+  "amount": 1123123123123123123
+}
