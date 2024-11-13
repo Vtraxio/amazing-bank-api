@@ -16,23 +16,13 @@ class MoneyController {
     public function transfer(HttpRequest $request, User $user): void {
         $receiver = $request->body()['target'];
         $amount = $request->body()['amount'];
-        $senderAccountNo = $user->account()->accountNo;
-
-        if ($amount < 0) {
-            throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Wypierdalaj"]);
-        }
-
-        $account = $this->db->query("SELECT * FROM account WHERE account_no = ?", [$senderAccountNo])->fetch();
-
-        if ($account['amount'] < $amount) {
-            throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie masz tyle kasy kolego"]);
-        }
+        $senderAccount = $user->account();
 
         $this->db->con->beginTransaction();
 
         $this->db->query("UPDATE account SET amount = amount - ? WHERE account_no = ?", [
             $amount,
-            $senderAccountNo,
+            $senderAccount->accountNo,
         ]);
         $this->db->query("UPDATE account SET amount = amount + ? WHERE account_no = ?", [
             $amount,
