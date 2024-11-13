@@ -18,6 +18,14 @@ class MoneyController {
         $amount = $request->body()['amount'];
         $senderAccount = $user->account();
 
+        if ($amount < 0) {
+            throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie oszukuj nas tu"]);
+        }
+
+        if ($senderAccount->amount < $amount) {
+            throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie masz tyle kasy kolego"]);
+        }
+
         $this->db->con->beginTransaction();
 
         $this->db->query("UPDATE account SET amount = amount - ? WHERE account_no = ?", [
