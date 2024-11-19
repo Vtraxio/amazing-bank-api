@@ -30,11 +30,11 @@ class MoneyController {
 
         $this->db->con->beginTransaction();
 
-        $this->db->query("UPDATE account SET amount = amount - ? WHERE account_no = ?", [
+        $this->db->query("UPDATE account SET amount = amount - ? WHERE id = ?", [
             $amount,
             $senderAccount->id,
         ]);
-        $this->db->query("UPDATE account SET amount = amount + ? WHERE account_no = ?", [
+        $this->db->query("UPDATE account SET amount = amount + ? WHERE id = ?", [
             $amount,
             $receiverAccount->id,
         ]);
