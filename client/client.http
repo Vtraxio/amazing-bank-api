@@ -33,5 +33,5 @@ Authorization: {{auth_token}}
 
 {
   "target": 123,
-  "amount": 1123123123123123123
+  "amount": 1
 }

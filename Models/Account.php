@@ -5,6 +5,7 @@ namespace Models;
 use Core\Database;
 
 class Account {
+    public int $id;
     public int $accountNo;
     public int $amount;
     public string $name;
@@ -22,6 +23,9 @@ class Account {
 
         if (!$data)
             return false;
-        return new Account($data["account_no"], $data["amount"], $data["name"]);
+
+        $account = new Account($data["account_no"], $data["amount"], $data["name"]);
+        $account->id = $data["id"];
+        return $account;
     }
 }

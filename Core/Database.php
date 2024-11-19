@@ -24,6 +24,9 @@ class Database {
     }
 
     public function query($query, $params = []): PDOStatement {
+        $final = interpolateQuery($query, $params);
+        file_put_contents("php://stdout", "Query: $final\n");
+
         $this->statement = $this->con->prepare($query);
         $this->statement->execute($params);
         return $this->statement;

@@ -19,3 +19,12 @@ function abort($status = 404): void {
 function base_path($path) {
     return BASE_PATH . $path;
 }
+
+function interpolateQuery($query, $params) {
+    foreach ($params as $key => $value) {
+        $placeholder = is_string($key) ? ":$key" : '?';
+        $escapedValue = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
+        $query = preg_replace('/' . preg_quote($placeholder, '/') . '/', $escapedValue, $query, 1);
+    }
+    return $query;
+}

@@ -18,7 +18,9 @@ class User {
             $this->id
         ])->fetch();
 
-        return new Account($account['account_no'], $account['amount'], $account['name']);
+        $acc = new Account($account['account_no'], $account['amount'], $account['name']);
+        $acc->id = $account['id'];
+        return $acc;
     }
 
     /**

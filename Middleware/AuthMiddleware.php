@@ -18,7 +18,7 @@ class AuthMiddleware implements Middleware {
     public function handle(HttpContext $context, MiddlewareFunc $middlewareFunc) {
         $token = $context->request->header('Authorization') ?? throw new HttpException(HttpStatusCode::UNAUTHORIZED);
         $userId = Token::check($token, $context->request->ip(), $this->db);
-        $user = $this->db->query('SELECT * FROM "user" u WHERE u.id = ?;', [
+        $user = $this->db->query('SELECT * FROM "user" u WHERE u.id = ?', [
             $userId
         ])->fetch();
 

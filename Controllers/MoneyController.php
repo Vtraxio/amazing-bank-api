@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Core\HttpException;
 use Core\HttpStatusCode;
+use Models\Account;
 use Models\Transfer;
 use Core\Database;
 use Core\Details\HttpRequest;
@@ -16,6 +17,7 @@ class MoneyController {
     public function transfer(HttpRequest $request, User $user): void {
         $receiver = $request->body()['target'];
         $amount = $request->body()['amount'];
+        $receiverAccount = Account::getAccount($receiver, $this->db);
         $senderAccount = $user->account();
 
         if ($amount < 0) {
@@ -30,13 +32,13 @@ class MoneyController {
 
         $this->db->query("UPDATE account SET amount = amount - ? WHERE account_no = ?", [
             $amount,
-            $senderAccount->accountNo,
+            $senderAccount->id,
         ]);
         $this->db->query("UPDATE account SET amount = amount + ? WHERE account_no = ?", [
             $amount,
-            $receiver,
+            $receiverAccount->id,
         ]);
-        Transfer::new($user->account()->accountNo, $receiver, $amount, $this->db);
+        Transfer::new($senderAccount->id, $receiverAccount->id, $amount, $this->db);
 
         $this->db->con->commit();
     }

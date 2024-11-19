@@ -7,7 +7,7 @@ use Core\Database;
 class Token {
     static function new(string $ip, int $userId, Database $db) {
         $hash = hash('sha256', $ip . $userId . time());
-        $db->query("INSERT INTO \"token\" (token, ip, userId) VALUES (?, ?, ?)", [
+        $db->query("INSERT INTO \"token\" (token, ip, user_id) VALUES (?, ?, ?)", [
             $hash, $ip, $userId
         ]);
 
@@ -22,6 +22,6 @@ class Token {
         if (!$data) {
             return false;
         }
-        return $data['userid'];
+        return $data['user_id'];
     }
 }
