@@ -14,6 +14,13 @@ class MoneyController {
     public function __construct(public Database $db) {
     }
 
+    /**
+     * Transfer money from one account to another
+     * @param HttpRequest $request Request
+     * @param User $user Current logged in user
+     * @return void
+     * @throws HttpException If the amount is negative or the sender does not have enough money
+     */
     public function transfer(HttpRequest $request, User $user): void {
         $receiver = $request->body()['target'];
         $amount = $request->body()['amount'];

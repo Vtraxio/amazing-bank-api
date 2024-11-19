@@ -6,11 +6,17 @@ use Core\App;
 use Core\Database;
 use Core\HttpException;
 use Core\HttpStatusCode;
+use Exception;
 
 class User {
     public function __construct(private int $id, public string $email) {
     }
 
+    /**
+     * Get the account of the user
+     * @return Account Account
+     * @throws Exception System error
+     */
     public function account(): Account {
         $db = App::container()->resolve(Database::class);
 
@@ -24,7 +30,12 @@ class User {
     }
 
     /**
-     * @throws HttpException
+     * Login the user, return instance
+     * @param string $login Email
+     * @param string $password Password
+     * @param Database $db Database
+     * @return mixed User ID
+     * @throws HttpException If the user does not exist or the password is incorrect
      */
     static function login(string $login, string $password, Database $db): mixed {
         $data = $db->query('SELECT id, password_hash from "user" WHERE email = ?', [

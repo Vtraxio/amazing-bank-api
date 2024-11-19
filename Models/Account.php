@@ -16,6 +16,12 @@ class Account {
         $this->name = $name;
     }
 
+    /**
+     * Get full account instance from a given account number
+     * @param int $accountNo Account number
+     * @param Database $db Database
+     * @return Account|false Account instance or false if the account does not exist
+     */
     public static function getAccount(int $accountNo, Database $db): Account|false {
         $data = $db->query("SELECT * FROM account WHERE account_no = ?", [
             $accountNo
