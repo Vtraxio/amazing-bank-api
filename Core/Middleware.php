@@ -4,6 +4,12 @@ namespace Core;
 
 use Core\Details\HttpContext;
 
-interface Middleware {
-    public function handle(HttpContext $context, MiddlewareFunc $middlewareFunc);
+abstract class Middleware {
+    public array $available = [];
+
+    abstract public function handle(HttpContext $context);
+
+    function makeAvailable(mixed $value): void {
+        $this->available[] = $value;
+    }
 }

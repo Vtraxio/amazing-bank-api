@@ -143,12 +143,11 @@ class Router {
 
         $reflectionData = [$context, $request, $params];
 
-        $middlewareFunc = new MiddlewareFunc();
         foreach ($route['middlewares'] as $middleware) {
             $class = App::container()->newClass($middleware);
-            $class->handle($context, $middlewareFunc);
+            $class->handle($context);
+            $reflectionData = array_merge($reflectionData, $class->available);
         }
-        $reflectionData = array_merge($reflectionData, $middlewareFunc->available);
 
         $funcParams = [];
 
