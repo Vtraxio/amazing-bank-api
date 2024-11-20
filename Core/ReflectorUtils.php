@@ -9,8 +9,12 @@ use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
+/**
+ * Static utility methods for reflection
+ */
 class ReflectorUtils {
     /**
+     * Gets the reflection function for a callable, either a closure or a class method
      * @throws ReflectionException
      */
     static function getReflectionFunction(mixed $callable): ReflectionFunctionAbstract {

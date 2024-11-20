@@ -5,6 +5,10 @@ namespace Core;
 use Exception;
 use ReflectionClass;
 
+/**
+ * Holds global instances of classes that can be accessed from anywhere
+ * @see bootstrap.php
+ */
 class Container {
     private array $bindings = [];
     private array $initialized = [];

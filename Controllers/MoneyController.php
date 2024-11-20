@@ -10,6 +10,9 @@ use Core\Database;
 use Core\Details\HttpRequest;
 use Models\User;
 
+/**
+ * Manages the flow of money between accounts
+ */
 class MoneyController {
     public function __construct(public Database $db) {
     }

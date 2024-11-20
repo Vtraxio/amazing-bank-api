@@ -4,6 +4,9 @@ namespace Models;
 
 use Core\Database;
 
+/**
+ * Represents a single transfer of money from one account to another
+ */
 class Transfer {
     /**
      * Create a new transfer

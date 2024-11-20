@@ -8,6 +8,9 @@ use Core\HttpException;
 use Models\Token;
 use Models\User;
 
+/**
+ * Manages user authentication and maybe registration
+ */
 class AuthenticationController {
     public function __construct(public Database $db) {
     }

@@ -8,6 +8,9 @@ use Core\HttpException;
 use Core\HttpStatusCode;
 use Exception;
 
+/**
+ * Represents a user that is used to authenticate
+ */
 class User {
     public function __construct(private int $id, public string $email) {
     }

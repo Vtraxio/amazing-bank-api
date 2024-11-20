@@ -1,1 +1,4 @@
 .idea
+phpDocumentor.phar
+.phpdoc
+docs

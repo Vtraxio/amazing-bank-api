@@ -4,6 +4,10 @@ namespace Models;
 
 use Core\Database;
 
+/**
+ * Represents a user account that can hold a bunch of money a {@link User} can own
+ * multiple accounts
+ */
 class Account {
     public int $id;
     public int $accountNo;

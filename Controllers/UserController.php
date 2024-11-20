@@ -11,6 +11,9 @@ use Models\Account;
 use Models\Token;
 use Models\User;
 
+/**
+ * Manages user data
+ */
 class UserController {
     public function __construct(public Database $db) {
     }

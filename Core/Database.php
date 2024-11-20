@@ -5,6 +5,9 @@ namespace Core;
 use PDO;
 use PDOStatement;
 
+/**
+ * Wraps around PDO to provide a more convenient way to interact with the database
+ */
 class Database {
     public PDO $con;
 

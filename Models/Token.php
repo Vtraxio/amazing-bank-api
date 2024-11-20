@@ -4,6 +4,9 @@ namespace Models;
 
 use Core\Database;
 
+/**
+ * Represents a token that is used to authenticate a user
+ */
 class Token {
     /**
      * Create a new token

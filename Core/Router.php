@@ -12,10 +12,23 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 
+/**
+ * Main router logic
+ */
 class Router {
+    /**
+     * @var array List of routes
+     */
     private array $routes = [];
 
-    public function add($method, $uri, $executor): static {
+    /**
+     * Add a route
+     * @param $method string http method
+     * @param $uri string uri
+     * @param $executor array|Closure function to execute
+     * @return $this Router
+     */
+    public function add(string $method, string $uri, array|Closure $executor): static {
         $this->routes[] = [
             'method' => $method,
             'uri' => trim($uri, '/'),
@@ -60,6 +73,7 @@ class Router {
     }
 
     /**
+     * Finds the requested route and calls {@link handle_route}
      * @throws HttpException|ReflectionException
      */
     public function route($baseurl, $uri, $method): void {
@@ -130,6 +144,7 @@ class Router {
     }
 
     /**
+     * Process the selected route
      * @throws ReflectionException
      * @throws Exception
      */
