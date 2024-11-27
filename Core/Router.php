@@ -8,6 +8,7 @@ use Core\Details\HttpParams;
 use Core\Details\HttpRequest;
 use Exception;
 use LogicException;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -167,6 +168,22 @@ class Router {
         $funcParams = [];
 
         foreach ($function->getParameters() as $parameter) {
+            $attributes = $parameter->getAttributes(Json::class);
+
+            if (count($attributes) > 0) {
+                // Construct same class as the parameter
+
+                $class = $parameter->getType()->getName();
+                $reflectionClass = new ReflectionClass($class);
+                try {
+                    $classInstance = $reflectionClass->newInstance($request->body());
+                    $funcParams[] = $classInstance;
+                } catch (Exception) {
+                    throw new HttpException(HttpStatusCode::BAD_REQUEST, "Invalid JSON body");
+                }
+                continue;
+            }
+
             $parameterType = $parameter->getType()->getName();
             $funcParam = current(array_filter($reflectionData, function ($pm) use ($parameterType) {
                 return get_class($pm) == $parameterType;

@@ -5,6 +5,8 @@ namespace Controllers;
 use Core\Database;
 use Core\Details\HttpRequest;
 use Core\HttpException;
+use Core\Json;
+use Dto\LoginRequest;
 use Models\Token;
 use Models\User;
 
@@ -17,14 +19,15 @@ class AuthenticationController {
 
     /**
      * Login a user
-     * @param HttpRequest $request Request
+     * @param HttpRequest $req
+     * @param LoginRequest $data
      * @return array Token
      * @throws HttpException
      */
-    public function login(HttpRequest $request): array {
-        $user = User::login($request->body()['login'], $request->body()['password'], $this->db);
+    public function login(HttpRequest $req, #[Json] LoginRequest $data): array {
+        $user = User::login($data->login, $data->password, $this->db);
         return [
-            'token' => Token::new($request->ip(), $user, $this->db)
+            'token' => Token::new($req->ip(), $user, $this->db)
         ];
     }
 }

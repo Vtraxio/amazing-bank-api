@@ -4,6 +4,8 @@ namespace Controllers;
 
 use Core\HttpException;
 use Core\HttpStatusCode;
+use Core\Json;
+use Dto\TransferRequest;
 use Models\Account;
 use Models\Transfer;
 use Core\Database;
@@ -19,15 +21,14 @@ class MoneyController {
 
     /**
      * Transfer money from one account to another
-     * @param HttpRequest $request Request
+     * @param TransferRequest $transfer
      * @param User $user Current logged in user
      * @return void
      * @throws HttpException If the amount is negative or the sender does not have enough money
      */
-    public function transfer(HttpRequest $request, User $user): void {
-        $receiver = $request->body()['target'];
-        $amount = $request->body()['amount'];
-        $receiverAccount = Account::getAccount($receiver, $this->db);
+    public function transfer(#[Json] TransferRequest $transfer, User $user): void {
+        $amount = $transfer->amount;
+        $receiverAccount = Account::getAccount($transfer->target, $this->db);
         $senderAccount = $user->account();
 
         if ($amount < 0) {
