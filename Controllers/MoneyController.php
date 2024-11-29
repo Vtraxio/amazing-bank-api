@@ -31,6 +31,10 @@ class MoneyController {
         $receiverAccount = Account::getAccount($transfer->target, $this->db);
         $senderAccount = $user->account();
 
+        if (!$receiverAccount) {
+            throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie ma takiego konta"]);
+        }
+
         if ($amount < 0) {
             throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie oszukuj nas tu"]);
         }
