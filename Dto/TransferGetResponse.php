@@ -2,7 +2,7 @@
 
 namespace Dto;
 
-class TransferGetResponse {
+readonly class TransferGetResponse {
     public string $targetName;
     public int $targetId;
     public string $amount;
@@ -23,6 +23,4 @@ class TransferGetResponse {
         $this->title = $title;
         $this->date = $date;
     }
-
-
 }
