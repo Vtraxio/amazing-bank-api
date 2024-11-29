@@ -15,3 +15,4 @@ $router->get("/account/details", [UserController::class, 'showMe'])->use(AuthMid
 $router->get("/account/:id", [UserController::class, 'showAny'])->where('id', "/^[0-9]+$/");
 
 $router->post("/transfer", [MoneyController::class, 'transfer'])->use(AuthMiddleware::class);
+$router->get("/transfer", [MoneyController::class, 'getTransfers'])->use(AuthMiddleware::class);

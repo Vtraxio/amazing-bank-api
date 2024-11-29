@@ -35,7 +35,7 @@ class MoneyController {
             throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie ma takiego konta"]);
         }
 
-        if ($amount < 0) {
+        if ($amount <= 0) {
             throw new HttpException(HttpStatusCode::BAD_REQUEST, ["message" => "Nie oszukuj nas tu"]);
         }
 
@@ -53,8 +53,13 @@ class MoneyController {
             $amount,
             $receiverAccount->id,
         ]);
-        Transfer::new($senderAccount->id, $receiverAccount->id, $amount, $this->db);
+        Transfer::new($senderAccount->id, $receiverAccount->id, $amount, $transfer->title, $this->db);
 
         $this->db->con->commit();
+    }
+
+    public function getTransfers(User $user): array {
+        $account = $user->account();
+        return $account->transfersResponseList($this->db);
     }
 }

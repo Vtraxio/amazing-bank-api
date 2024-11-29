@@ -33,5 +33,11 @@ Authorization: {{auth_token}}
 
 {
   "target": 123,
-  "amount": 1
+  "amount": 1,
+  "title": "Dla mamusi kacperka"
 }
+
+### Get all Transfers
+
+GET {{host}}/transfer
+Authorization: {{auth_token}}

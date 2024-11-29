@@ -3,6 +3,7 @@
 namespace Models;
 
 use Core\Database;
+use Dto\TransferGetResponse;
 
 /**
  * Represents a user account that can hold a bunch of money a {@link User} can own
@@ -37,5 +38,22 @@ class Account {
         $account = new Account($data["account_no"], $data["amount"], $data["name"]);
         $account->id = $data["id"];
         return $account;
+    }
+
+    /**
+     * @return TransferGetResponse[]
+     */
+    public function transfersResponseList(Database $db): array {
+        $transfers = $db->query("SELECT t.amount, a.account_no, a.name, t.title, t.created_ad FROM transfer t INNER JOIN public.account a on a.id = t.target_id WHERE source_id = ? ORDER BY created_ad DESC", [
+            $this->id
+        ])->fetchAll();
+
+        $responseList = [];
+
+        foreach ($transfers as $transfer) {
+            $responseList[] = new TransferGetResponse($transfer["name"], $transfer["account_no"], $transfer["amount"], $transfer["title"], $transfer["created_ad"]);
+        }
+
+        return $responseList;
     }
 }
