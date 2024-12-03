@@ -44,14 +44,14 @@ class Account {
      * @return TransferGetResponse[]
      */
     public function transfersResponseList(Database $db): array {
-        $transfers = $db->query("SELECT t.amount, a.account_no, a.name, t.title, t.created_ad FROM transfer t INNER JOIN public.account a on a.id = t.target_id WHERE source_id = ? ORDER BY created_ad DESC", [
+        $transfers = $db->query("SELECT * FROM get_transfers_on_account(?)", [
             $this->id
         ])->fetchAll();
 
         $responseList = [];
 
         foreach ($transfers as $transfer) {
-            $responseList[] = new TransferGetResponse($transfer["name"], $transfer["account_no"], $transfer["amount"], $transfer["title"], $transfer["created_ad"]);
+            $responseList[] = new TransferGetResponse($transfer["account_name"], $transfer["account_no"], $transfer["amount"], $transfer["title"], $transfer["created_at"]);
         }
 
         return $responseList;
