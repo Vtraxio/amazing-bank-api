@@ -5,18 +5,18 @@ namespace Dto;
 readonly class SingleTransfer {
     public string $targetName;
     public int $targetId;
-    public string $amount;
+    public int $amount;
     public string $title;
     public string $date;
 
     /**
      * @param string $targetName
      * @param int $targetId
-     * @param string $amount
+     * @param int $amount
      * @param string $title
      * @param string $date
      */
-    public function __construct(string $targetName, int $targetId, string $amount, string $title, string $date) {
+    public function __construct(string $targetName, int $targetId, int $amount, string $title, string $date) {
         $this->targetName = $targetName;
         $this->targetId = $targetId;
         $this->amount = $amount;
