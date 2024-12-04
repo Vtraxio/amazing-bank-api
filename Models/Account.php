@@ -3,7 +3,8 @@
 namespace Models;
 
 use Core\Database;
-use Dto\TransferGetResponse;
+use Dto\TransfersGetResponse;
+use Dto\SingleTransfer;
 
 /**
  * Represents a user account that can hold a bunch of money a {@link User} can own
@@ -41,19 +42,27 @@ class Account {
     }
 
     /**
-     * @return TransferGetResponse[]
+     * Get all transfers on this account, split into sent and received
+     * @param Database $db Database Connection
+     * @return TransfersGetResponse
      */
-    public function transfersResponseList(Database $db): array {
+    public function transfersResponseList(Database $db): TransfersGetResponse {
         $transfers = $db->query("SELECT * FROM get_transfers_on_account(?)", [
             $this->id
         ])->fetchAll();
 
-        $responseList = [];
+        // array_value is used because php is retarded and array_filter does not start keys from 0
+        $sentTransfers = array_values(array_filter($transfers, fn($transfer) => $transfer["sent"] === true));
+        $receivedTransfers = array_values(array_filter($transfers, fn($transfer) => $transfer["sent"] === false));
 
-        foreach ($transfers as $transfer) {
-            $responseList[] = new TransferGetResponse($transfer["account_name"], $transfer["account_no"], $transfer["amount"], $transfer["title"], $transfer["created_at"]);
-        }
+        $sentTransfers = array_map(function ($tr) {
+            return new SingleTransfer($tr["account_name"], $tr["account_no"], $tr["amount"], $tr["title"], $tr["created_at"]);
+        }, $sentTransfers);
 
-        return $responseList;
+        $receivedTransfers = array_map(function ($tr) {
+            return new SingleTransfer($tr["account_name"], $tr["account_no"], $tr["amount"], $tr["title"], $tr["created_at"]);
+        }, $receivedTransfers);
+
+        return new TransfersGetResponse($sentTransfers, $receivedTransfers);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Dto;
 
-readonly class TransferGetResponse {
+readonly class SingleTransfer {
     public string $targetName;
     public int $targetId;
     public string $amount;

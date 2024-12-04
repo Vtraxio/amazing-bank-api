@@ -12,7 +12,7 @@ POST {{host}}/login
 Content-Type: application/json
 
 {
-  "login": "nigga",
+  "login": "lolz",
   "password": "nice"
 }
 
@@ -32,9 +32,9 @@ Content-Type: application/json
 Authorization: {{auth_token}}
 
 {
-  "target": 123,
-  "amount": 1,
-  "title": "Dla mamusi kacperka"
+  "target": 123456,
+  "amount": 5,
+  "title": "Dla mamusi dowejko"
 }
 
 ### Get all Transfers

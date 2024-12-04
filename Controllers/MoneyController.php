@@ -5,6 +5,7 @@ namespace Controllers;
 use Core\HttpException;
 use Core\HttpStatusCode;
 use Core\Json;
+use Dto\TransfersGetResponse;
 use Dto\TransferRequest;
 use Models\Account;
 use Models\Transfer;
@@ -58,7 +59,7 @@ class MoneyController {
         $this->db->con->commit();
     }
 
-    public function getTransfers(User $user): array {
+    public function getTransfers(User $user): TransfersGetResponse {
         $account = $user->account();
         return $account->transfersResponseList($this->db);
     }
